@@ -1,0 +1,132 @@
+/********************************************************************************
+** Form generated from reading UI file 'mainwindow.ui'
+**
+** Created by: Qt User Interface Compiler version 5.0.2
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
+
+#ifndef UI_MAINWINDOW_H
+#define UI_MAINWINDOW_H
+
+#include <QtCore/QVariant>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+#include "../../qcustomplot.h"
+
+QT_BEGIN_NAMESPACE
+
+class Ui_MainWindow
+{
+public:
+    QWidget *centralWidget;
+    QVBoxLayout *verticalLayout;
+    QFrame *frame_2;
+    QVBoxLayout *verticalLayout_3;
+    QCustomPlot *customPlot;
+    QFrame *frame;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label;
+    QCustomPlot *customPlot2;
+    QMenuBar *menuBar;
+    QStatusBar *statusBar;
+
+    void setupUi(QMainWindow *MainWindow)
+    {
+        if (MainWindow->objectName().isEmpty())
+            MainWindow->setObjectName(QStringLiteral("MainWindow"));
+        MainWindow->resize(621, 515);
+        centralWidget = new QWidget(MainWindow);
+        centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        verticalLayout = new QVBoxLayout(centralWidget);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        frame_2 = new QFrame(centralWidget);
+        frame_2->setObjectName(QStringLiteral("frame_2"));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Sunken);
+        frame_2->setLineWidth(1);
+        frame_2->setMidLineWidth(0);
+        verticalLayout_3 = new QVBoxLayout(frame_2);
+        verticalLayout_3->setSpacing(0);
+        verticalLayout_3->setContentsMargins(0, 0, 0, 0);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        customPlot = new QCustomPlot(frame_2);
+        customPlot->setObjectName(QStringLiteral("customPlot"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(customPlot->sizePolicy().hasHeightForWidth());
+        customPlot->setSizePolicy(sizePolicy);
+
+        verticalLayout_3->addWidget(customPlot);
+
+        frame = new QFrame(frame_2);
+        frame->setObjectName(QStringLiteral("frame"));
+        frame->setFrameShape(QFrame::NoFrame);
+        frame->setFrameShadow(QFrame::Raised);
+        verticalLayout_2 = new QVBoxLayout(frame);
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        label = new QLabel(frame);
+        label->setObjectName(QStringLiteral("label"));
+
+        verticalLayout_2->addWidget(label);
+
+
+        verticalLayout_3->addWidget(frame);
+
+        customPlot2 = new QCustomPlot(frame_2);
+        customPlot2->setObjectName(QStringLiteral("customPlot2"));
+        sizePolicy.setHeightForWidth(customPlot2->sizePolicy().hasHeightForWidth());
+        customPlot2->setSizePolicy(sizePolicy);
+
+        verticalLayout_3->addWidget(customPlot2);
+
+
+        verticalLayout->addWidget(frame_2);
+
+        MainWindow->setCentralWidget(centralWidget);
+        menuBar = new QMenuBar(MainWindow);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 621, 25));
+        MainWindow->setMenuBar(menuBar);
+        statusBar = new QStatusBar(MainWindow);
+        statusBar->setObjectName(QStringLiteral("statusBar"));
+        MainWindow->setStatusBar(statusBar);
+
+        retranslateUi(MainWindow);
+
+        QMetaObject::connectSlotsByName(MainWindow);
+    } // setupUi
+
+    void retranslateUi(QMainWindow *MainWindow)
+    {
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "QCustomPlot Synchronization Example", 0));
+        label->setText(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'Droid Sans'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:600;\">Drag or zoom the ranges</span><span style=\" font-family:'Ubuntu'; font-size:11pt;\"> of either plot to see the synchronization between the two.</span></p></body></html>", 0));
+    } // retranslateUi
+
+};
+
+namespace Ui {
+    class MainWindow: public Ui_MainWindow {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+#endif // UI_MAINWINDOW_H
