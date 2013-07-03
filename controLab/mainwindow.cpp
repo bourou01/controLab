@@ -25,10 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
 ///
 ///
 ///
-
+/*
     QTimer *timer = new QTimer (this);
     connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
     timer->start(500);
+    */
 
 
 /////// Attache le bouton 'GO' a l'action ouvrir la fenetre de la communication serie
@@ -73,7 +74,7 @@ void MainWindow::onDatasReadyToBeRed(QString *toParse) {
             plots->at(i)->updateWith(frdmY, frdmX);
     }
     */
-
+/*
     FRDMJSONParser::getInstance()->setJson(toParse);
     QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
 
@@ -89,6 +90,15 @@ void MainWindow::onDatasReadyToBeRed(QString *toParse) {
     }
 
 dummy++;
+*/
+
+    dummy++;
+
+    for (int i=0; i<plots->size(); i++) {
+           plots->at(i)->updatePlotsFromNotification(*toParse);
+    }
+
+
 
 }
 
@@ -103,11 +113,10 @@ void MainWindow::onPlotButtonClicked() {
     plots->push_back(newCustomPlotDialog);
 
     /// pour pouvoir le supprimer plutard
-    newCustomPlotDialog->setTarget(plots->size() - 1);
+    //newCustomPlotDialog->setTarget(plots->size() - 1);
 
     newCustomPlotDialog->show();
 }
-
 
 ////////////////////////////////////////////////////////
 /// CustomPlotDialog delegate

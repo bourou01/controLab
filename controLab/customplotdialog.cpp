@@ -6,14 +6,13 @@
 
 #include "frdmjsonparser.h"
 
-
 CustomPlotDialog::CustomPlotDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CustomPlotDialog)
 {
     ui->setupUi(this);
 
-    comboSelected = 0;
+    //comboSelected = 0;
 
 ///// Configure lineStyleComboBox
     ui->lineStyleComboBox->addItem("None", QCPGraph::lsNone);
@@ -113,6 +112,9 @@ CustomPlotDialog::CustomPlotDialog(QWidget *parent) :
     CustomPlotDialog::insertNewGraph();
     CustomPlotDialog::updateGraphsIds();
 
+///// init time synchronisation
+    TIME_SYNCHRONISATION = 0;
+
 }
 
 void CustomPlotDialog::configureCustomPlot() {
@@ -141,7 +143,24 @@ void CustomPlotDialog::configureCustomPlot() {
 
 
 void CustomPlotDialog::updatePlotsFromNotification(QString toParse) {
+
+
     FRDMJSONParser::getInstance()->setJson(&toParse);
+
+
+    double last_time = FRDMJSONParser::getInstance()->xAtPort("1");
+
+    /// to not getting the same time synchronisation
+    if (!(last_time >CustomPlotDialog::TIME_SYNCHRONISATION))
+        return;
+
+    //qDebug() << (last_time >CustomPlotDialog::TIME_SYNCHRONISATION);
+
+
+    if (last_time > TIME_SYNCHRONISATION)
+        TIME_SYNCHRONISATION = last_time;
+
+
     QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
     CustomPlotDialog::updateCanalsListWith(listen);
     for (int i=0; i<ui->customPlot->graphCount(); i++) {
@@ -250,7 +269,7 @@ void CustomPlotDialog::updateGraphsIds() {
 /// \param --
 ///
 void CustomPlotDialog::onCanalsListChanged(int selected) {
-   comboSelected = selected;
+   //comboSelected = selected;
 
    CustomGraph *selectedGraph = customGraphs.at(ui->graphIdComboBox->currentIndex());
    selectedGraph->setCurrentCanal(ui->canalsListComboBox->currentText());
@@ -260,19 +279,24 @@ void CustomPlotDialog::onCanalsListChanged(int selected) {
 
 void CustomPlotDialog::updateCanalsListWith(QList<QString> liste) {
     canals = liste;
-    if (ui->canalsListComboBox->count()<=0)
+
+    if (ui->canalsListComboBox->count()<canals.size()) {
         for (int i=0; i<liste.size(); i++) {
             ui->canalsListComboBox->addItem(liste.at(i), liste.at(i));
         }
+    }
+
+    /*
     if (comboSelected<=ui->canalsListComboBox->count())
             ui->canalsListComboBox->setCurrentIndex(comboSelected);
+            */
 }
 
 //////////////////////////// Methods  ////////////////////////////
 /// \brief --
 /// \param --
 ///
-
+/*
 void CustomPlotDialog::setCanal(QString newCanal) {
     canal = newCanal;
 }
@@ -293,6 +317,8 @@ QVector<double> * CustomPlotDialog::getXVector() {
 QVector<double> * CustomPlotDialog::getYVector() {
      return buffered2DSamples->getYVector();
 }
+*/
+
 
 void CustomPlotDialog::closeEvent(QCloseEvent *event) {
     /*
@@ -308,7 +334,7 @@ writeSettings();
 
 }
 
-
+/*
 void CustomPlotDialog::updateWith(double x, double y) {
 
     buffered2DSamples->insert2DSample(x, y);
@@ -326,6 +352,7 @@ void CustomPlotDialog::setTarget(int cible) {
     this->setWindowTitle(QString("New graph %1").arg(this->getTarget()));
 }
 
+
 ///////
 /// \brief CustomPlotDialog::getTarget
 /// \return
@@ -334,10 +361,11 @@ int CustomPlotDialog::getTarget() {
     return target;
 }
 
+*/
 CustomPlotDialog::~CustomPlotDialog()
 {
     delete ui;
-    delete buffered2DSamples;
+   // delete buffered2DSamples;
 
     for (int i=0; i<customGraphs.size(); i++) {
         delete customGraphs.at(i);

@@ -23,12 +23,13 @@ public:
 //// Override
     void closeEvent(QCloseEvent *event);
 
+/*
     void updateWith(double x, double y);
     void setTarget(int cible);
     int getTarget();
+*/
+
     void updateCanalsListWith(QList<QString> liste);
-
-
     void updatePlotsFromNotification(QString toParse);
 
 
@@ -51,13 +52,14 @@ private slots:
 Q_SIGNALS:
     void close(CustomPlotDialog * me);
     void onCanalsListComboBoxChanged(CustomPlotDialog *sender);
-
+/*
 public:
     void setCanal(QString newCanal);
     QString getCanal();
     int getComboSelected();
     QVector<double> * getXVector();
     QVector<double> * getYVector();
+*/
 
 private:
     int insertNewGraph( );
@@ -66,17 +68,15 @@ private:
 
 private:
     Ui::CustomPlotDialog *ui;
-    Buffered2DSamples *buffered2DSamples; /// deprecated
-    int target; /// deprecated
-    int comboSelected; ///deprecated
-
+    //Buffered2DSamples *buffered2DSamples; /// deprecated
+    //int target; /// deprecated
+    //int comboSelected; ///deprecated
     QList<QString> canals;
-    QString canal; /// deprecated
-
+    //QString canal; /// deprecated
     QVector <CustomGraph *> customGraphs;
-
-
     QList<QColor> myColors;
+
+    double TIME_SYNCHRONISATION;
 
 };
 
