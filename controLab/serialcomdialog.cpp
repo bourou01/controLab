@@ -31,6 +31,8 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
 
     ui->baudRateBox->setCurrentIndex(3);
 
+
+
     ui->parityBox->addItem("NONE", PAR_NONE);
     ui->parityBox->addItem("ODD", PAR_ODD);
     ui->parityBox->addItem("EVEN", PAR_EVEN);
@@ -54,7 +56,9 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     //timer->setInterval(40);
     timer->setInterval(250);
     //! [1]
-    PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   // PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+
     port = new QextSerialPort(ui->portBox->currentText(), settings, QextSerialPort::Polling);
     //! [1]
 
