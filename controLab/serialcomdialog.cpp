@@ -29,7 +29,7 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     ui->baudRateBox->addItem("19200", BAUD19200);
     ui->baudRateBox->addItem("115200", BAUD115200);
 
-    ui->baudRateBox->setCurrentIndex(3);
+    ui->baudRateBox->setCurrentIndex(5);
 
 
 
@@ -54,10 +54,10 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
 
     timer = new QTimer(this);
     //timer->setInterval(40);
-    timer->setInterval(250);
+    timer->setInterval(40);
     //! [1]
-   PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
-   // PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
     port = new QextSerialPort(ui->portBox->currentText(), settings, QextSerialPort::Polling);
     //! [1]
@@ -70,6 +70,8 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     connect(ui->dataBitsBox, SIGNAL(currentIndexChanged(int)), SLOT(onDataBitsChanged(int)));
     connect(ui->stopBitsBox, SIGNAL(currentIndexChanged(int)), SLOT(onStopBitsChanged(int)));
     connect(ui->queryModeBox, SIGNAL(currentIndexChanged(int)), SLOT(onQueryModeChanged(int)));
+
+
     connect(ui->timeOutSpinBox, SIGNAL(valueChanged(int)), SLOT(onTimeoutChanged(int)));
     connect(ui->portBox, SIGNAL(editTextChanged(QString)), SLOT(onPortNameChanged(QString)));
     connect(ui->openCloseButton, SIGNAL(clicked()), SLOT(onOpenCloseButtonClicked()));
@@ -85,6 +87,12 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     setWindowTitle(tr("Aquarium Control Serial Port"));
 
     datasBuffer = new QString();
+
+
+    //port->setTimeout(15);
+
+    //ui->timeOutSpinBox->setValue(15);
+
 
 }
 
