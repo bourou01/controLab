@@ -9,7 +9,6 @@
 
 #include <iostream>
 
-
 SerialComDialog::SerialComDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SerialComDialog)
@@ -30,8 +29,6 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     ui->baudRateBox->addItem("115200", BAUD115200);
 
     ui->baudRateBox->setCurrentIndex(5);
-
-
 
     ui->parityBox->addItem("NONE", PAR_NONE);
     ui->parityBox->addItem("ODD", PAR_ODD);
@@ -57,9 +54,11 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     timer->setInterval(40);
     //! [1]
    //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
-   PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
-    port = new QextSerialPort(ui->portBox->currentText(), settings, QextSerialPort::Polling);
+    PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+
+     port = new QextSerialPort(ui->portBox->currentText(), settings, QextSerialPort::Polling);
+
     //! [1]
 
     enumerator = new QextSerialEnumerator(this);
@@ -197,15 +196,6 @@ void SerialComDialog::onReadyRead()
         ui->recvEdit->moveCursor(QTextCursor::End);
         ui->recvEdit->insertPlainText(QString::fromLatin1(bytes));
 
-/*
-        FRDMJSONParser::getInstance()->setJson(new QString(bytes));
-        QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
-        double frdmX = FRDMJSONParser::getInstance()->xAtPort("1");
-        double frdmY = FRDMJSONParser::getInstance()->yAtPort("1");
-
-
-        qDebug() << "(x=" << frdmX << ",y=" << frdmY << ")";
-*/
         datasReady(new QString(bytes));
 
 

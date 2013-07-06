@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     buffered2dsamples.cpp \
     frdmjsonparser.cpp \
     customplotdialog.cpp \
-    customgraph.cpp
+    customgraph.cpp \
+    QespTest.cpp \
+    MessageWindow.cpp \
+    frdmrequestmanager.cpp
 
 HEADERS  += mainwindow.h \
     serialcomdialog.h \
@@ -30,7 +33,10 @@ HEADERS  += mainwindow.h \
     buffered2dsamples.h \
     frdmjsonparser.h \
     customplotdialog.h \
-    customgraph.h
+    customgraph.h \
+    QespTest.h \
+    MessageWindow.h \
+    frdmrequestmanager.h
 
 FORMS    += mainwindow.ui \
     serialcomdialog.ui \

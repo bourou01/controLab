@@ -4,30 +4,32 @@
 #include "customplotdialog.h"
 
 #include "serialcomdialog.h"
+
+
+#include "MessageWindow.h"
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    //! [0]
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+    //redirect debug messages to the MessageWindow dialog
+    qInstallMsgHandler(MessageWindow::AppendMsgWrapper);
+#else
+    qInstallMessageHandler(MessageWindow::AppendMsgWrapper);
+#endif
+    //! [0]
 
 
         MainWindow w;
-        //w.show();
-
-
+        w.show();
 
 /*
     CustomPlotDialog d;
     d.show();
 
     */
-
-    /*
-    FRDMJSONParser::getInstance()->setJson(new QString("{\"1\":{\"name\": \"pression\",\"x\": \"4\",\"y\": \"5\"}, \"2\":{\"name\": \"temperature\",\"x\": \"86.45\",\"y\": \"5\"}}"));
-    QList<QString> ports =  FRDMJSONParser::getInstance()->ports();
-    qDebug() << FRDMJSONParser::getInstance()->xAtPort("2");
-    //qDebug() << ports;
-   // return -1;
-   */
-
     return a.exec();
 }
 

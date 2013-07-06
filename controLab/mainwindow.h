@@ -16,6 +16,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     
+    QMenu *fileMenu;
+    QAction *exitAct;
+    QMenu *helpMenu;
+    QAction *aboutAct;
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -37,6 +42,18 @@ private:
     QVector <CustomPlotDialog *> *plots;
 
     double dummy;
+
+
+
+
+private:
+    void createMenus();
+    void createActions();
+
+private slots:
+    void about();
+
+
 
 };
 

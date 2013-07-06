@@ -3,16 +3,25 @@
 #include <QDebug>
 
 #include <QTimer>
+
+#include <QMessageBox>
+#include <QMenuBar>
+
+
 #include "frdmjsonparser.h"
+
+#include "MessageWindow.h"
+#include "QespTest.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
     srand(QDateTime::currentDateTime().toTime_t());
-    ui->setupUi(this);
+    //ui->setupUi(this);
 
+
+/*
 /////// Configuration du dialogue du port Serie
     serialComDialog = new SerialComDialog();
     serialComDialog->show();
@@ -25,11 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
 ///
 ///
 ///
-/*
-    QTimer *timer = new QTimer (this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
-    timer->start(500);
-    */
+
+    //QTimer *timer = new QTimer (this);
+    //connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
+    //timer->start(500);
+
 
 
 /////// Attache le bouton 'GO' a l'action ouvrir la fenetre de la communication serie
@@ -38,9 +47,25 @@ MainWindow::MainWindow(QWidget *parent) :
 /////// Connexion SerialComDialog
     connect(serialComDialog, SIGNAL(datasReady(QString *)), this, SLOT(onDatasReadyToBeRed(QString *)));
     connect(serialComDialog, SIGNAL(plotButtonHasBeenClicked()), this, SLOT(onPlotButtonClicked()));
-
-
     dummy=0;
+    */
+
+
+    //central widget
+    QespTest *qespTest = new QespTest();
+    setCentralWidget(qespTest);
+    //bottom dock widget
+    MessageWindow *msgWindow = new MessageWindow();
+    addDockWidget(Qt::BottomDockWidgetArea, msgWindow);
+
+    createActions();
+    createMenus();
+
+    setWindowTitle(tr("QextSerialPort Test Application"));
+
+
+
+
 }
 
 void MainWindow::onGoButtonClicked() {
@@ -54,67 +79,20 @@ void MainWindow::onGoButtonClicked() {
 ///ga
 ///
 void MainWindow::onDatasReadyToBeRed(QString *toParse) {
-
-    /*
-    FRDMJSONParser::getInstance()->setJson(toParse);
-    QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
-    double frdmX = FRDMJSONParser::getInstance()->xAtPort("1");
-    double frdmY = FRDMJSONParser::getInstance()->yAtPort("1");
-
-    if (frdmY>dummy)
-        dummy = frdmY;
-
-
-    qDebug() << "(x=" << frdmX << ",y=" << frdmY << ")";
-
-    for (int i=0; i<plots->size(); i++) {
-        //plots->at(i)->updateWith(dummy, (double)((int)dummy % 10));
-
-        if (frdmY== dummy)
-            plots->at(i)->updateWith(frdmY, frdmX);
-    }
-    */
-/*
-    FRDMJSONParser::getInstance()->setJson(toParse);
-    QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
-
-    for (int i=0; i<plots->size(); i++) {
-            double frdmX = FRDMJSONParser::getInstance()->xAtPort(plots->at(i)->getCanal());
-            double frdmY = FRDMJSONParser::getInstance()->yAtPort(plots->at(i)->getCanal());
-
-            if (frdmY>dummy)
-                dummy = frdmY;
-
-            plots->at(i)->updateWith(frdmY, frdmX);
-            plots->at(i)->updateCanalsListWith(listen);
-    }
-
-dummy++;
-*/
-
     dummy++;
-
     for (int i=0; i<plots->size(); i++) {
            plots->at(i)->updatePlotsFromNotification(*toParse);
     }
-
-
-
 }
 
 void MainWindow::onPlotButtonClicked() {
     CustomPlotDialog *newCustomPlotDialog = new CustomPlotDialog();
-
     /////// Connexion SerialComDialog
     connect(newCustomPlotDialog, SIGNAL(close(CustomPlotDialog *)), this, SLOT(aPlotHasBeenClosed(CustomPlotDialog *)));
     connect(newCustomPlotDialog, SIGNAL(onCanalsListComboBoxChanged(CustomPlotDialog *)), this, SLOT(canalsListComboBoxChanged(CustomPlotDialog *)));
-
     /// attache un evenement
     plots->push_back(newCustomPlotDialog);
-
     /// pour pouvoir le supprimer plutard
-    //newCustomPlotDialog->setTarget(plots->size() - 1);
-
     newCustomPlotDialog->show();
 }
 
@@ -122,26 +100,14 @@ void MainWindow::onPlotButtonClicked() {
 /// CustomPlotDialog delegate
 ///
 void MainWindow::aPlotHasBeenClosed(CustomPlotDialog *sender) {
-    // qDebug() << "aPlotHasBeenClosed"<< sender->getTarget()  << "total: " << plots->size();
-
     for (int i=0; i<plots->size(); i++) {
         if (plots->at(i) == sender)
             plots->remove(i);
     }
-    //plots->resize(plots->size());
 }
 
-void MainWindow::canalsListComboBoxChanged(CustomPlotDialog *sender) {
-    //qDebug() << "changed" << sender->getTarget()  << "to" << sender->getComboSelected();
-    /*
-    for (int i=0; i<plots->size(); i++) {
-        if (plots->at(i) == sender) {
+void MainWindow::canalsListComboBoxChanged(CustomPlotDialog *sender) { /// deprecated
 
-        }
-            plots->at(i)->updateWith(frdmX, frdmY);
-            plots->at(i)->updateCanalsListWith(listen);
-    }
-*/
 }
 ////////////////////////////////////////////////////////
 ///
@@ -155,33 +121,57 @@ void MainWindow::onSerialNotificationPushed() {
     for (int i=0; i<plots->size(); i++) {
            plots->at(i)->updatePlotsFromNotification(*toParse);
     }
-
-    /*
-    FRDMJSONParser::getInstance()->setJson(toParse);
-    QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
-
-
-
-    for (int i=0; i<plots->size(); i++) {
-//        for (int j=0; j<) {
-            double frdmX = FRDMJSONParser::getInstance()->xAtPort(plots->at(i)->getCanal());
-            double frdmY = FRDMJSONParser::getInstance()->yAtPort(plots->at(i)->getCanal());
-
-            if (frdmY>dummy)
-                dummy = frdmY;
-
-           plots->at(i)->updateWith(frdmX, frdmY);
-  //      }
-           plots->at(i)->updateCanalsListWith(listen);
-    }
-
-*/
-
-
 }
+
+
+
+////////////////////////////////////////////////////////////////////////
+///
+///
+
+void MainWindow::about()
+{
+    QMessageBox::about(this, tr("About "),
+                       tr("<B>""</B><BR>"
+                          "author: Michal Policht<br>"
+                          "<a href='mailto:xpolik@users.sourceforge.net'>xpolik@users.sourceforge.net</a>"));
+}
+
+void MainWindow::createActions()
+{
+    //File actions
+    exitAct = new QAction(tr("E&xit"), this);
+    exitAct->setShortcut(tr("CTRL+D"));
+    exitAct->setStatusTip(tr("Exit the application"));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+
+    //Help actions
+    aboutAct = new QAction(tr("&About"), this);
+    aboutAct->setShortcut(tr("CTRL+A"));
+    aboutAct->setStatusTip(tr("About application"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+}
+
+void MainWindow::createMenus()
+{
+    fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(exitAct);
+
+    helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(aboutAct);
+}
+
+
+////////////////////////////////////////////////////////////////////////
+///
+///
+
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    delete serialComDialog;
+    //delete ui;
+    //delete serialComDialog;
 }
+
+
+

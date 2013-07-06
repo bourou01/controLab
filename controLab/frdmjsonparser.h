@@ -13,7 +13,6 @@ private:
     static FRDMJSONParser *_instance;
 
 
-
 public:
     /// singleton
     static FRDMJSONParser *getInstance();
