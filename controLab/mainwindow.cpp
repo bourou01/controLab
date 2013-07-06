@@ -57,8 +57,21 @@ MainWindow::MainWindow(QWidget *parent) :
     */
 
 
+    /////// Configuration d'un timer de test
+    ///
+    ///
+    ///
+
+        QTimer *timer = new QTimer (this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
+        timer->start(500);
+
+
+    plots = new QVector<CustomPlotView *>();
+
     // custom plot View
     CustomPlotView *customPlotView = new CustomPlotView();
+    plots->push_back(customPlotView);
     QDockWidget *W2 = new QDockWidget();
     W2->setWidget(customPlotView);
     setCentralWidget(W2);
@@ -105,6 +118,7 @@ void MainWindow::onDatasReadyToBeRed(QString *toParse) {
 }
 
 void MainWindow::onPlotButtonClicked() {
+    /*
     CustomPlotDialog *newCustomPlotDialog = new CustomPlotDialog();
     /////// Connexion SerialComDialog
     connect(newCustomPlotDialog, SIGNAL(close(CustomPlotDialog *)), this, SLOT(aPlotHasBeenClosed(CustomPlotDialog *)));
@@ -113,19 +127,22 @@ void MainWindow::onPlotButtonClicked() {
     plots->push_back(newCustomPlotDialog);
     /// pour pouvoir le supprimer plutard
     newCustomPlotDialog->show();
+    */
 }
 
 ////////////////////////////////////////////////////////
 /// CustomPlotDialog delegate
 ///
-void MainWindow::aPlotHasBeenClosed(CustomPlotDialog *sender) {
+void MainWindow::aPlotHasBeenClosed(CustomPlotView *sender) {
+    /*
     for (int i=0; i<plots->size(); i++) {
         if (plots->at(i) == sender)
             plots->remove(i);
     }
+    */
 }
 
-void MainWindow::canalsListComboBoxChanged(CustomPlotDialog *sender) { /// deprecated
+void MainWindow::canalsListComboBoxChanged(CustomPlotView *sender) { /// deprecated
 
 }
 ////////////////////////////////////////////////////////

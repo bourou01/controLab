@@ -5,7 +5,7 @@
 #include "QCustomPlot/qcustomplot.h"
 #include "buffered2dsamples.h"
 #include "serialcomdialog.h"
-#include "customplotdialog.h"
+#include "customplotview.h"
 
 
 namespace Ui {
@@ -33,13 +33,13 @@ private slots:
     void onDatasReadyToBeRed(QString *toParse);
     void onPlotButtonClicked();
 /// CustomPlotDialog
-    void aPlotHasBeenClosed(CustomPlotDialog *sender);
-    void canalsListComboBoxChanged(CustomPlotDialog *sender);
+    void aPlotHasBeenClosed(CustomPlotView *sender);
+    void canalsListComboBoxChanged(CustomPlotView *sender);
 
 private:
     Ui::MainWindow *ui;
     SerialComDialog *serialComDialog;
-    QVector <CustomPlotDialog *> *plots;
+    QVector <CustomPlotView *> *plots;
 
     double dummy;
 

@@ -122,9 +122,6 @@ bool SerialConfigurationView::eventFilter(QObject *object, QEvent *event)
     }
 }
 
-
-
-
 void SerialConfigurationView::transmitMsg()
 {
     int i = port->write(ui->message->text().toLatin1());
@@ -185,8 +182,6 @@ void SerialConfigurationView::onReadyRead()
     //receiveMsg();
 }
 
-
-
 void SerialConfigurationView::appendCR()
 {
     ui->message->insert(QLatin1String("\x0D"));
@@ -198,13 +193,6 @@ void SerialConfigurationView::appendLF()
 }
 void SerialConfigurationView::appendEndCmd() {
     ui->message->insert(" \n");
-}
-
-
-
-void configureGUI() {
-
-
 }
 
 
