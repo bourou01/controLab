@@ -1,23 +1,24 @@
-#ifndef SERIALCOMDIALOG_H
-#define SERIALCOMDIALOG_H
+#ifndef SERIALCONFIGURATIONVIEW_H
+#define SERIALCONFIGURATIONVIEW_H
 
-#include <QDialog>
-#include "customplotdialog.h"
+#include <QWidget>
 
 namespace Ui {
-class SerialComDialog;
+class SerialConfigurationView;
 }
+
 class QTimer;
 class QextSerialPort;
 class QextSerialEnumerator;
 
-class SerialComDialog : public QDialog
+
+class SerialConfigurationView : public QWidget
 {
     Q_OBJECT
     
 public:
-    explicit SerialComDialog(QWidget *parent = 0);
-    ~SerialComDialog();
+    explicit SerialConfigurationView(QWidget *parent = 0);
+    ~SerialConfigurationView();
 
 protected:
     void changeEvent(QEvent *e);
@@ -31,10 +32,15 @@ private Q_SLOTS:
     void onQueryModeChanged(int idx);
     void onTimeoutChanged(int val);
     void onOpenCloseButtonClicked();
-    void onSendButtonClicked();
     void onReadyRead();
     void onPortAddedOrRemoved();
     void onPlotButtonClicked();
+    ///:
+    void transmitMsg();
+    void receiveMsg();
+    void appendCR();
+    void appendLF();
+    void appendEndCmd();
 
 
 Q_SIGNALS:
@@ -43,12 +49,17 @@ Q_SIGNALS:
      void onCloseButtonClicked();
 
 private:
-    Ui::SerialComDialog *ui;
     QTimer *timer;
     QextSerialPort *port;
     QextSerialEnumerator *enumerator;
 
+    void configureGUI();
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event);
+    
+private:
+    Ui::SerialConfigurationView *ui;
 };
 
-#endif // SERIALCOMDIALOG_H
+#endif // SERIALCONFIGURATIONVIEW_H

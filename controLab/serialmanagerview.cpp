@@ -1,6 +1,8 @@
-/* QespTest.cpp
+#include "serialmanagerview.h"
+
+/* SerialManagerView.cpp
 **************************************/
-#include "QespTest.h"
+#include "SerialManagerView.h"
 #include "qextserialport.h"
 #include <QLayout>
 #include <QLineEdit>
@@ -13,28 +15,10 @@
 #include <QIODevice>
 
 
-QespTest::QespTest(QWidget *parent)
+SerialManagerView::SerialManagerView(QWidget *parent)
     : QWidget(parent)
 
 {
-    //modify the port settings on your own
-#ifdef Q_OS_UNIX
-    //port = new QextSerialPort(QLatin1String("/dev/tty.usbmodem622"), QextSerialPort::Polling);
-#else
-    port = new QextSerialPort(QLatin1String("COM1"), QextSerialPort::Polling);
-#endif /*Q_OS_UNIX*/
-
-    /*
-    port->setBaudRate(BAUD115200);
-    port->setFlowControl(FLOW_OFF);
-    port->setParity(PAR_NONE);
-    port->setDataBits(DATA_8);
-    //port->setStopBits(STOP_2);
-    port->setStopBits(STOP_1);
-
-    //set timeouts to 500 ms
-    port->setTimeout(500);
-*/
 
     /// Timer for Polling
     timer = new QTimer(this);
@@ -49,9 +33,6 @@ QespTest::QespTest(QWidget *parent)
     /// protocoles
     connect(port, SIGNAL(readyRead()), SLOT(onReadyRead()));
 
-
-
-
     /// Enumerator
     ///
     enumerator = new QextSerialEnumerator(this);
@@ -61,6 +42,21 @@ QespTest::QespTest(QWidget *parent)
 
 
     message = new QLineEdit(this);
+
+
+
+    setupGUI();
+
+
+}
+
+
+void SerialManagerView::setupGUI() {
+
+
+
+
+
 
     // transmit receive
     QPushButton *transmitButton = new QPushButton(tr("Transmit"));
@@ -105,8 +101,7 @@ QespTest::QespTest(QWidget *parent)
     message->installEventFilter(this);
 }
 
-
-bool QespTest::eventFilter(QObject *object, QEvent *event)
+bool SerialManagerView::eventFilter(QObject *object, QEvent *event)
 {
     if (object == message && event->type() == QEvent::KeyPress)
     {
@@ -134,13 +129,13 @@ bool QespTest::eventFilter(QObject *object, QEvent *event)
     }
 }
 
-QespTest::~QespTest()
+SerialManagerView::~SerialManagerView()
 {
     delete port;
     port = NULL;
 }
 
-void QespTest::transmitMsg()
+void SerialManagerView::transmitMsg()
 {
     int i = port->write(message->text().toLatin1());
     qDebug("trasmitted : %d", i);
@@ -152,7 +147,7 @@ void QespTest::transmitMsg()
     message->clear();
 }
 
-void QespTest::receiveMsg()
+void SerialManagerView::receiveMsg()
 {
     char buff[1024];
     int numBytes;
@@ -174,12 +169,13 @@ void QespTest::receiveMsg()
     qDebug("received: %d", i);
 }
 
-void QespTest::onReadyRead()
+void SerialManagerView::onReadyRead()
 {
     char buff[1024];
     int numBytes;
     numBytes = port->bytesAvailable();
     if (numBytes) {
+
         if(numBytes > 1024)
             numBytes = 1024;
 
@@ -195,37 +191,33 @@ void QespTest::onReadyRead()
         qDebug("bytes available: %d", numBytes);
         qDebug("received: %d", i);
     }
-
-
-    //receiveMsg();
 }
 
 
-void QespTest::appendCR()
+void SerialManagerView::appendCR()
 {
     message->insert(QLatin1String("\x0D"));
 }
 
-void QespTest::appendLF()
+void SerialManagerView::appendLF()
 {
     message->insert(QLatin1String("\x0A"));
 }
-void QespTest::appendEndCmd() {
+void SerialManagerView::appendEndCmd() {
     message->insert(" \n");
 }
 
-void QespTest::closePort()
+void SerialManagerView::closePort()
 {
     timer->stop();
     port->close();
     qDebug("is open: %d", port->isOpen());
 }
 
-void QespTest::openPort()
+void SerialManagerView::openPort()
 {
 
     port->open(QIODevice::ReadWrite | QIODevice::Unbuffered);
-
     //If using polling mode, we need a QTimer
     if (port->isOpen() && port->queryMode() == QextSerialPort::Polling)
         timer->start();
@@ -236,7 +228,7 @@ void QespTest::openPort()
 }
 
 
-void QespTest::onPortAddedOrRemoved()
+void SerialManagerView::onPortAddedOrRemoved()
 {
     foreach (QextPortInfo info, QextSerialEnumerator::getPorts()) {
         qDebug() << "liste ports : " << info.portName;

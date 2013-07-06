@@ -24,7 +24,11 @@ SOURCES += main.cpp\
     customgraph.cpp \
     QespTest.cpp \
     MessageWindow.cpp \
-    frdmrequestmanager.cpp
+    frdmrequestmanager.cpp \
+    serialmanagerview.cpp \
+    customplotview.cpp \
+    serialconfigurationview.cpp \
+    frdmcontrolview.cpp
 
 HEADERS  += mainwindow.h \
     serialcomdialog.h \
@@ -36,8 +40,15 @@ HEADERS  += mainwindow.h \
     customgraph.h \
     QespTest.h \
     MessageWindow.h \
-    frdmrequestmanager.h
+    frdmrequestmanager.h \
+    serialmanagerview.h \
+    customplotview.h \
+    serialconfigurationview.h \
+    frdmcontrolview.h
 
 FORMS    += mainwindow.ui \
     serialcomdialog.ui \
-    customplotdialog.ui
+    customplotdialog.ui \
+    customplotview.ui \
+    serialconfigurationview.ui \
+    frdmcontrolview.ui

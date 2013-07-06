@@ -1,4 +1,7 @@
-#include "serialcomdialog.h"
+#include "serialconfigurationview.h"
+#include "ui_serialconfigurationview.h"
+
+
 #include "ui_serialcomdialog.h"
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
@@ -7,13 +10,15 @@
 #include "frdmjsonparser.h"
 #include "customplotdialog.h"
 
-#include <iostream>
 
-SerialComDialog::SerialComDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::SerialComDialog)
+
+SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::SerialConfigurationView)
 {
     ui->setupUi(this);
+
+
 
     //! [0]
     foreach (QextPortInfo info, QextSerialEnumerator::getPorts())
@@ -70,14 +75,12 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
     connect(ui->timeOutSpinBox, SIGNAL(valueChanged(int)), SLOT(onTimeoutChanged(int)));
     connect(ui->portBox, SIGNAL(editTextChanged(QString)), SLOT(onPortNameChanged(QString)));
     connect(ui->openCloseButton, SIGNAL(clicked()), SLOT(onOpenCloseButtonClicked()));
-    connect(ui->sendButton, SIGNAL(clicked()), SLOT(onSendButtonClicked()));
     connect(timer, SIGNAL(timeout()), SLOT(onReadyRead()));
     connect(port, SIGNAL(readyRead()), SLOT(onReadyRead()));
 
     connect(enumerator, SIGNAL(deviceDiscovered(QextPortInfo)), SLOT(onPortAddedOrRemoved()));
     connect(enumerator, SIGNAL(deviceRemoved(QextPortInfo)), SLOT(onPortAddedOrRemoved()));
 
-    connect(ui->plotButton, SIGNAL(clicked()), SLOT(onPlotButtonClicked()));
 
     setWindowTitle(tr("Aquarium Control Serial Port"));
 
@@ -85,22 +88,137 @@ SerialComDialog::SerialComDialog(QWidget *parent) :
 
     //ui->timeOutSpinBox->setValue(15);
 
+    /// configure textEdit
+    ui->message->installEventFilter(this);
 
 }
 
-void SerialComDialog::onPlotButtonClicked() {
-    plotButtonHasBeenClicked();
+
+bool SerialConfigurationView::eventFilter(QObject *object, QEvent *event)
+{
+    if (object == ui->message && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() == Qt::Key_Return)
+        {
+            // Special tab handling
+            //qDebug("Enter Key Pressed...");
+
+            /// transmission
+            if (ui->message->text().length() > 0) {
+                appendEndCmd();
+                transmitMsg();
+            }
+            return true;
+        }
+        else
+        {
+            return QWidget::eventFilter(object, event);
+        }
+    }
+    else
+    {
+        return QWidget::eventFilter(object, event);
+    }
 }
 
-SerialComDialog::~SerialComDialog()
+
+
+
+void SerialConfigurationView::transmitMsg()
+{
+    int i = port->write(ui->message->text().toLatin1());
+    qDebug("trasmitted : %d", i);
+
+    qDebug() << "message : " << ui->message->text().toLatin1();
+
+    //receiveMsg();
+
+    ui->message->clear();
+}
+
+void SerialConfigurationView::receiveMsg()
+{
+    char buff[1024];
+    int numBytes;
+
+    numBytes = port->bytesAvailable();
+    if(numBytes > 1024)
+        numBytes = 1024;
+
+    int i = port->read(buff, numBytes);
+    if (i != -1)
+        buff[i] = '\0';
+    else
+        buff[0] = '\0';
+    QString msg = QLatin1String(buff);
+
+    ui->received_msg->append(msg);
+    ui->received_msg->ensureCursorVisible();
+    qDebug("bytes available: %d", numBytes);
+    qDebug("received: %d", i);
+}
+
+void SerialConfigurationView::onReadyRead()
+{
+    char buff[1024];
+    int numBytes;
+    numBytes = port->bytesAvailable();
+    if (numBytes) {
+        if(numBytes > 1024)
+            numBytes = 1024;
+
+        int i = port->read(buff, numBytes);
+        if (i != -1)
+            buff[i] = '\0';
+        else
+            buff[0] = '\0';
+        QString msg = QLatin1String(buff);
+
+        ui->received_msg->append(msg);
+        ui->received_msg->ensureCursorVisible();
+        qDebug("bytes available: %d", numBytes);
+        qDebug("received: %d", i);
+    }
+
+
+    //receiveMsg();
+}
+
+
+
+void SerialConfigurationView::appendCR()
+{
+    ui->message->insert(QLatin1String("\x0D"));
+}
+
+void SerialConfigurationView::appendLF()
+{
+    ui->message->insert(QLatin1String("\x0A"));
+}
+void SerialConfigurationView::appendEndCmd() {
+    ui->message->insert(" \n");
+}
+
+
+
+void configureGUI() {
+
+
+}
+
+
+SerialConfigurationView::~SerialConfigurationView()
 {
     delete ui;
     delete port;
 }
 
-void SerialComDialog::changeEvent(QEvent *e)
+
+
+void SerialConfigurationView::changeEvent(QEvent *e)
 {
-    QDialog::changeEvent(e);
+    QWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
@@ -110,7 +228,7 @@ void SerialComDialog::changeEvent(QEvent *e)
     }
 }
 
-void SerialComDialog::onPortNameChanged(const QString & /*name*/)
+void SerialConfigurationView::onPortNameChanged(const QString & /*name*/)
 {
     if (port->isOpen()) {
         port->close();
@@ -118,38 +236,38 @@ void SerialComDialog::onPortNameChanged(const QString & /*name*/)
     }
 }
 //! [2]
-void SerialComDialog::onBaudRateChanged(int idx)
+void SerialConfigurationView::onBaudRateChanged(int idx)
 {
     port->setBaudRate((BaudRateType)ui->baudRateBox->itemData(idx).toInt());
 }
 
-void SerialComDialog::onParityChanged(int idx)
+void SerialConfigurationView::onParityChanged(int idx)
 {
     port->setParity((ParityType)ui->parityBox->itemData(idx).toInt());
 }
 
-void SerialComDialog::onDataBitsChanged(int idx)
+void SerialConfigurationView::onDataBitsChanged(int idx)
 {
     port->setDataBits((DataBitsType)ui->dataBitsBox->itemData(idx).toInt());
 }
 
-void SerialComDialog::onStopBitsChanged(int idx)
+void SerialConfigurationView::onStopBitsChanged(int idx)
 {
     port->setStopBits((StopBitsType)ui->stopBitsBox->itemData(idx).toInt());
 }
 
-void SerialComDialog::onQueryModeChanged(int idx)
+void SerialConfigurationView::onQueryModeChanged(int idx)
 {
     port->setQueryMode((QextSerialPort::QueryMode)ui->queryModeBox->itemData(idx).toInt());
 }
 
-void SerialComDialog::onTimeoutChanged(int val)
+void SerialConfigurationView::onTimeoutChanged(int val)
 {
     port->setTimeout(val);
 }
 //! [2]
 //! [3]
-void SerialComDialog::onOpenCloseButtonClicked()
+void SerialConfigurationView::onOpenCloseButtonClicked()
 {
     if (!port->isOpen()) {
         port->setPortName(ui->portBox->currentText());
@@ -170,23 +288,9 @@ void SerialComDialog::onOpenCloseButtonClicked()
 }
 //! [3]
 //! [4]
-void SerialComDialog::onSendButtonClicked()
-{
-    if (port->isOpen() && !ui->sendEdit->toPlainText().isEmpty())
-        port->write(ui->sendEdit->toPlainText().toLatin1());
-}
 
-void SerialComDialog::onReadyRead()
-{
-    if (port->bytesAvailable()) {
-        QByteArray bytes = QByteArray(port->readAll());
-        ui->recvEdit->moveCursor(QTextCursor::End);
-        ui->recvEdit->insertPlainText(QString::fromLatin1(bytes));
-        datasReady(new QString(bytes));
-    }
-}
 
-void SerialComDialog::onPortAddedOrRemoved()
+void SerialConfigurationView::onPortAddedOrRemoved()
 {
     QString current = ui->portBox->currentText();
     ui->portBox->blockSignals(true);
@@ -200,4 +304,6 @@ void SerialComDialog::onPortAddedOrRemoved()
 
 //! [4]
 
-
+void SerialConfigurationView::onPlotButtonClicked() {
+    plotButtonHasBeenClicked();
+}

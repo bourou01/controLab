@@ -11,14 +11,20 @@
 #include "frdmjsonparser.h"
 
 #include "MessageWindow.h"
-#include "QespTest.h"
+#include "serialmanagerview.h"
+#include "customplotview.h"
+
+#include "frdmcontrolview.h"
+
+#include "serialconfigurationview.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     srand(QDateTime::currentDateTime().toTime_t());
-    //ui->setupUi(this);
+    ui->setupUi(this);
 
 
 /*
@@ -51,21 +57,34 @@ MainWindow::MainWindow(QWidget *parent) :
     */
 
 
+    // custom plot View
+    CustomPlotView *customPlotView = new CustomPlotView();
+    QDockWidget *W2 = new QDockWidget();
+    W2->setWidget(customPlotView);
+    setCentralWidget(W2);
+
     //central widget
-    QespTest *qespTest = new QespTest();
-    setCentralWidget(qespTest);
+    SerialConfigurationView *qespTest = new SerialConfigurationView();
+    QDockWidget *W1 = new QDockWidget();
+    W1->setWidget(qespTest);
+    addDockWidget(Qt::RightDockWidgetArea, W1);
+
     //bottom dock widget
     MessageWindow *msgWindow = new MessageWindow();
     addDockWidget(Qt::BottomDockWidgetArea, msgWindow);
 
+    // Control View
+    FRDMControlView *frdmControlView = new FRDMControlView();
+    QDockWidget *W3 = new QDockWidget();
+    W3->setWidget(frdmControlView);
+    addDockWidget(Qt::LeftDockWidgetArea, W3);
+
+    ///
     createActions();
     createMenus();
 
+
     setWindowTitle(tr("QextSerialPort Test Application"));
-
-
-
-
 }
 
 void MainWindow::onGoButtonClicked() {

@@ -46,9 +46,6 @@ private slots:
 
     void onAutoscaleCheckBoxChanged(int choice);
 
-
-
-
 Q_SIGNALS:
     void close(CustomPlotDialog * me);
     void onCanalsListComboBoxChanged(CustomPlotDialog *sender);

@@ -43,9 +43,6 @@ private:
 
     double dummy;
 
-
-
-
 private:
     void createMenus();
     void createActions();

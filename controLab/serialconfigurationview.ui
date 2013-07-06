@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SerialComDialog</class>
- <widget class="QDialog" name="SerialComDialog">
+ <class>SerialConfigurationView</class>
+ <widget class="QWidget" name="SerialConfigurationView">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>544</height>
+    <width>343</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="2">
-    <layout class="QVBoxLayout" name="verticalLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>cmd:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="message"/>
+       </item>
+      </layout>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="portHorizontalLayout">
        <item>
@@ -148,86 +162,20 @@
       </layout>
      </item>
      <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="sendButton">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Send</string>
+          <string>Response:</string>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="received_msg"/>
        </item>
       </layout>
      </item>
     </layout>
-   </item>
-   <item row="0" column="0" rowspan="5">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>Type here to transmit:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextEdit" name="sendEdit"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>Receive here:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QTextEdit" name="recvEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="1" rowspan="3" colspan="2">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_10">
-     <item>
-      <widget class="QToolButton" name="plotButton">
-       <property name="text">
-        <string>Plot</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="samplesButton">
-       <property name="text">
-        <string>Samples</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="2">
-    <widget class="Line" name="line_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
