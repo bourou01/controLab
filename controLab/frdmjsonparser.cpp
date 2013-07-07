@@ -28,6 +28,8 @@ QMap<QString, QVariant> FRDMJSONParser::getMappedJson(void) {
     QMap<QString, QVariant> mapped = doc.toVariant().toMap();
     return mapped;
 }
+
+/// provider 'exec sensors'
 QList<QString> FRDMJSONParser::ports(void) {
     return getMappedJson().keys();
 }
@@ -41,3 +43,14 @@ double FRDMJSONParser::yAtPort(QString port) {
     return getMappedJson().value(port).toMap().value("y").toDouble();;
 }
 
+/// get ressource
+QString FRDMJSONParser::getKeyAt(int position) {
+    QList<QString> keys = getMappedJson().keys();
+    if (keys.length()>position)
+        return keys.at(position);
+    else
+        return QString("");
+}
+double FRDMJSONParser::getValueForKey(QString key) {
+    return getMappedJson().value(key).toDouble();
+}

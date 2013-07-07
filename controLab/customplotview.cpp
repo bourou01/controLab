@@ -159,11 +159,11 @@ void CustomPlotView::updatePlotsFromNotification(QString toParse) {
     double last_time = FRDMJSONParser::getInstance()->xAtPort("1");
 
     /// to not getting the same time synchronisation
+
     if (!(last_time >CustomPlotView::TIME_SYNCHRONISATION))
         return;
 
     //qDebug() << (last_time >CustomPlotView::TIME_SYNCHRONISATION);
-
 
     if (last_time > TIME_SYNCHRONISATION)
         TIME_SYNCHRONISATION = last_time;
@@ -301,34 +301,6 @@ void CustomPlotView::updateCanalsListWith(QList<QString> liste) {
             */
 }
 
-//////////////////////////// Methods  ////////////////////////////
-/// \brief --
-/// \param --
-///
-/*
-void CustomPlotView::setCanal(QString newCanal) {
-    canal = newCanal;
-}
-QString CustomPlotView::getCanal() {
-    //return canal;
-    if (canals.size()> comboSelected)
-        return canal = canals.at(comboSelected);
-    else return "1";
-}
-
-int CustomPlotView::getComboSelected() {
-    return comboSelected;
-}
-
-QVector<double> * CustomPlotView::getXVector() {
-    return buffered2DSamples->getXVector();
-}
-QVector<double> * CustomPlotView::getYVector() {
-     return buffered2DSamples->getYVector();
-}
-*/
-
-
 void CustomPlotView::closeEvent(QCloseEvent *event) {
     /*
 if (maybeSave()) {
@@ -343,34 +315,6 @@ writeSettings();
 
 }
 
-/*
-void CustomPlotView::updateWith(double x, double y) {
-
-    buffered2DSamples->insert2DSample(x, y);
-    if (buffered2DSamples->getSize()>0) {
-        ui->customPlot->graph()->setData(*buffered2DSamples->getXVector(), *buffered2DSamples->getYVector());
-
-
-        ui->customPlot->rescaleAxes();
-        ui->customPlot->replot();
-    }
-}
-
-void CustomPlotView::setTarget(int cible) {
-    target = cible;
-    this->setWindowTitle(QString("New graph %1").arg(this->getTarget()));
-}
-
-
-///////
-/// \brief CustomPlotView::getTarget
-/// \return
-///
-int CustomPlotView::getTarget() {
-    return target;
-}
-
-*/
 CustomPlotView::~CustomPlotView()
 {
     delete ui;

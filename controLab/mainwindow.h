@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include "QCustomPlot/qcustomplot.h"
 #include "buffered2dsamples.h"
-#include "serialcomdialog.h"
+//#include "serialcomdialog.h"
 #include "customplotview.h"
-
+#include "serialconfigurationview.h"
+#include "frdmcontrolview.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,7 +31,7 @@ private slots:
     void onSerialNotificationPushed();
 
 /// SerialComDialog slots:
-    void onDatasReadyToBeRed(QString *toParse);
+    void onDatasReadyToBeRed(QString toParse);
     void onPlotButtonClicked();
 /// CustomPlotDialog
     void aPlotHasBeenClosed(CustomPlotView *sender);
@@ -38,10 +39,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    SerialComDialog *serialComDialog;
+    //SerialComDialog *serialComDialog;
     QVector <CustomPlotView *> *plots;
 
-    double dummy;
+    SerialConfigurationView *serialConfigurationView;
+    FRDMControlView *frdmControlView;
 
 private:
     void createMenus();

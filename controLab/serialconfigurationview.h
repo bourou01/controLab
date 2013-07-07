@@ -44,7 +44,7 @@ private Q_SLOTS:
 
 
 Q_SIGNALS:
-     void datasReady(QString *);
+     void datasReady(QString );
      void plotButtonHasBeenClicked();
      void onCloseButtonClicked();
 
@@ -53,7 +53,13 @@ private:
     QextSerialPort *port;
     QextSerialEnumerator *enumerator;
 
+    QString request;
+
     void configureGUI();
+
+public:
+    void performRequest(QString r);
+
 
 protected:
     bool eventFilter(QObject *object, QEvent *event);

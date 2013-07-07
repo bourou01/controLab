@@ -14,8 +14,6 @@
 #include "serialmanagerview.h"
 #include "customplotview.h"
 
-#include "frdmcontrolview.h"
-
 #include "serialconfigurationview.h"
 
 
@@ -46,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //timer->start(500);
 
 
-
 /////// Attache le bouton 'GO' a l'action ouvrir la fenetre de la communication serie
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(onGoButtonClicked()));
 
@@ -62,10 +59,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ///
     ///
 
-        QTimer *timer = new QTimer (this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
-        timer->start(500);
-
+/*
+    QTimer *timer = new QTimer (this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
+    timer->start(500);
+*/
 
     plots = new QVector<CustomPlotView *>();
 
@@ -77,9 +75,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(W2);
 
     //central widget
-    SerialConfigurationView *qespTest = new SerialConfigurationView();
+    serialConfigurationView = new SerialConfigurationView();
+    connect(serialConfigurationView, SIGNAL(datasReady(QString )), this, SLOT(onDatasReadyToBeRed(QString )));
     QDockWidget *W1 = new QDockWidget();
-    W1->setWidget(qespTest);
+    W1->setWidget(serialConfigurationView);
     addDockWidget(Qt::RightDockWidgetArea, W1);
 
     //bottom dock widget
@@ -87,7 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::BottomDockWidgetArea, msgWindow);
 
     // Control View
-    FRDMControlView *frdmControlView = new FRDMControlView();
+    frdmControlView = new FRDMControlView();
+    frdmControlView->setSerialConfigurationView(serialConfigurationView);
     QDockWidget *W3 = new QDockWidget();
     W3->setWidget(frdmControlView);
     addDockWidget(Qt::LeftDockWidgetArea, W3);
@@ -97,11 +97,12 @@ MainWindow::MainWindow(QWidget *parent) :
     createMenus();
 
 
-    setWindowTitle(tr("QextSerialPort Test Application"));
+    setWindowTitle(tr("AQUARIUM Control"));
+
 }
 
 void MainWindow::onGoButtonClicked() {
-    serialComDialog->show();
+    //serialComDialog->show();
 }
 
 
@@ -110,11 +111,31 @@ void MainWindow::onGoButtonClicked() {
 /// SerialComDialog dele
 ///ga
 ///
-void MainWindow::onDatasReadyToBeRed(QString *toParse) {
-    dummy++;
-    for (int i=0; i<plots->size(); i++) {
-           plots->at(i)->updatePlotsFromNotification(*toParse);
+void MainWindow::onDatasReadyToBeRed(QString toParse) {
+
+
+    FRDMJSONParser::getInstance()->setJson(&toParse);
+
+
+    QString key = FRDMJSONParser::getInstance()->getKeyAt(0);
+    double value = FRDMJSONParser::getInstance()->getValueForKey(key);
+    qDebug() << key;
+
+    if (key.toLatin1() == "temperature") {
+        frdmControlView->setTemperature(value);
+    } else if (key.toLatin1() == "dimmer0") {
+        frdmControlView->setDimmer0(value);
+    } else if (key.toLatin1() == "pressure") {
+        frdmControlView->setPressure(value);
+    } else {
+        for (int i=0; i<plots->size(); i++) {
+               plots->at(i)->updatePlotsFromNotification(toParse);
+        }
     }
+
+
+
+
 }
 
 void MainWindow::onPlotButtonClicked() {
@@ -149,14 +170,17 @@ void MainWindow::canalsListComboBoxChanged(CustomPlotView *sender) { /// depreca
 ///
 ///
 void MainWindow::onSerialNotificationPushed() {
-
-    dummy++;
+/*
     double y = (rand()/(double)RAND_MAX + 0.5)*2;
     QString *toParse = new QString(QString("{\"1\":{\"name\": \"pression\",\"x\": \"%1\",\"y\": \"%2\"}, \"2\":{\"name\": \"temperature\",\"x\": \"%3\",\"y\": \"%4\"}}").arg(QString::number(dummy), QString::number(sin(dummy)), QString::number(dummy), QString::number(y)));
 
     for (int i=0; i<plots->size(); i++) {
            plots->at(i)->updatePlotsFromNotification(*toParse);
     }
+    */
+
+
+    serialConfigurationView->performRequest(QString("exec sensors"));
 }
 
 
@@ -201,8 +225,6 @@ void MainWindow::createMenus()
 ////////////////////////////////////////////////////////////////////////
 ///
 ///
-
-
 MainWindow::~MainWindow()
 {
     //delete ui;

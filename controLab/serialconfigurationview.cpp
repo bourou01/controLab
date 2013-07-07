@@ -8,8 +8,8 @@
 #include <QtCore>
 
 #include "frdmjsonparser.h"
-#include "customplotdialog.h"
-
+#include <QEvent>
+#include <QKeyEvent>
 
 
 SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
@@ -55,7 +55,7 @@ SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
 
     timer = new QTimer(this);
     //timer->setInterval(40);
-    timer->setInterval(40);
+    timer->setInterval(250);
     //! [1]
    //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
@@ -91,7 +91,18 @@ SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
     /// configure textEdit
     ui->message->installEventFilter(this);
 
+
+    //request = new QString("exec sensors");
+
 }
+
+
+void SerialConfigurationView::performRequest(QString r) {
+    request = r;
+    request.append(" \n");
+    SerialConfigurationView::transmitMsg();
+}
+
 
 
 bool SerialConfigurationView::eventFilter(QObject *object, QEvent *event)
@@ -106,8 +117,11 @@ bool SerialConfigurationView::eventFilter(QObject *object, QEvent *event)
 
             /// transmission
             if (ui->message->text().length() > 0) {
-                appendEndCmd();
+                //
+                performRequest(ui->message->text());
+                //appendEndCmd();
                 transmitMsg();
+                ui->message->clear();
             }
             return true;
         }
@@ -124,15 +138,16 @@ bool SerialConfigurationView::eventFilter(QObject *object, QEvent *event)
 
 void SerialConfigurationView::transmitMsg()
 {
-    int i = port->write(ui->message->text().toLatin1());
+    //int i = port->write(ui->message->text().toLatin1());
+    int i = port->write(request.toLatin1());
     qDebug("trasmitted : %d", i);
 
-    qDebug() << "message : " << ui->message->text().toLatin1();
+    qDebug() << "message : " << request.toLatin1();
 
     //receiveMsg();
-
-    ui->message->clear();
 }
+
+
 
 void SerialConfigurationView::receiveMsg()
 {
@@ -171,6 +186,8 @@ void SerialConfigurationView::onReadyRead()
         else
             buff[0] = '\0';
         QString msg = QLatin1String(buff);
+
+        datasReady(QString(msg));
 
         ui->received_msg->append(msg);
         ui->received_msg->ensureCursorVisible();

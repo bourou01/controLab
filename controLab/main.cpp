@@ -1,10 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include "frdmjsonparser.h"
-#include "customplotdialog.h"
-
-#include "serialcomdialog.h"
-
 
 #include "MessageWindow.h"
 
