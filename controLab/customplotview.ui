@@ -14,6 +14,9 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QCustomPlot" name="customPlot" native="true"/>
+   </item>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
@@ -23,18 +26,25 @@
          <item>
           <widget class="QToolButton" name="addPlotButton">
            <property name="text">
-            <string>Ajouter Courbe    </string>
+            <string>Add Plot</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QToolButton" name="deletePlotButton">
            <property name="text">
-            <string>Supprimer Courbe</string>
+            <string>Remove Plot</string>
            </property>
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -75,7 +85,7 @@
            <item>
             <widget class="QLabel" name="label_6">
              <property name="text">
-              <string>graphId:</string>
+              <string>Graph:</string>
              </property>
             </widget>
            </item>
@@ -99,6 +109,13 @@
           </layout>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -139,16 +156,6 @@
       </layout>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QCustomPlot" name="customPlot" native="true"/>
    </item>
   </layout>
  </widget>

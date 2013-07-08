@@ -11,7 +11,7 @@
 #include <QCoreApplication>
 #include <QMutexLocker>
 
-const char *MessageWindow::WINDOW_TITLE = "Message Window";
+const char *MessageWindow::WINDOW_TITLE = "Terminal";
 MessageWindow *MessageWindow::MsgHandler = NULL;
 
 MessageWindow::MessageWindow(QWidget *parent, Qt::WindowFlags flags)

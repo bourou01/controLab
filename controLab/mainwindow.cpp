@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 /*
     QTimer *timer = new QTimer (this);
     connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
-    timer->start(500);
+    timer->start(1500);
 */
 
     plots = new QVector<CustomPlotView *>();
@@ -70,16 +70,18 @@ MainWindow::MainWindow(QWidget *parent) :
     // custom plot View
     CustomPlotView *customPlotView = new CustomPlotView();
     plots->push_back(customPlotView);
-    QDockWidget *W2 = new QDockWidget();
-    W2->setWidget(customPlotView);
-    setCentralWidget(W2);
+    QDockWidget *W1 = new QDockWidget();
+    W1->setWindowTitle(QString("Plotting"));
+    W1->setWidget(customPlotView);
+    setCentralWidget(W1);
 
     //central widget
     serialConfigurationView = new SerialConfigurationView();
     connect(serialConfigurationView, SIGNAL(datasReady(QString )), this, SLOT(onDatasReadyToBeRed(QString )));
-    QDockWidget *W1 = new QDockWidget();
-    W1->setWidget(serialConfigurationView);
-    addDockWidget(Qt::RightDockWidgetArea, W1);
+    QDockWidget *W2 = new QDockWidget();
+    W2->setWindowTitle(QString("Serial Configuration"));
+    W2->setWidget(serialConfigurationView);
+    addDockWidget(Qt::RightDockWidgetArea, W2);
 
     //bottom dock widget
     MessageWindow *msgWindow = new MessageWindow();
@@ -89,13 +91,13 @@ MainWindow::MainWindow(QWidget *parent) :
     frdmControlView = new FRDMControlView();
     frdmControlView->setSerialConfigurationView(serialConfigurationView);
     QDockWidget *W3 = new QDockWidget();
+    W3->setWindowTitle(QString("Control"));
     W3->setWidget(frdmControlView);
     addDockWidget(Qt::LeftDockWidgetArea, W3);
 
     ///
     createActions();
     createMenus();
-
 
     setWindowTitle(tr("AQUARIUM Control"));
 
@@ -113,13 +115,9 @@ void MainWindow::onGoButtonClicked() {
 ///
 void MainWindow::onDatasReadyToBeRed(QString toParse) {
 
-
     FRDMJSONParser::getInstance()->setJson(&toParse);
-
-
     QString key = FRDMJSONParser::getInstance()->getKeyAt(0);
     double value = FRDMJSONParser::getInstance()->getValueForKey(key);
-    qDebug() << key;
 
     if (key.toLatin1() == "temperature") {
         frdmControlView->setTemperature(value);

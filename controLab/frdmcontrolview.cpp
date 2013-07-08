@@ -26,7 +26,10 @@ FRDMControlView::FRDMControlView(QWidget *parent) :
     dimmer0.max = 100.0f;
 
 
+    ui->setPointSpinBox->setRange(0, 100);
+    ui->setPointSlider->setRange(0, 100);
     ui->setPointSpinBox->setValue(temperature.value);
+    ui->setPointSlider->setValue(ui->setPointSpinBox->value());
 
     ui->sourcesList->addItem("temperature");
     ui->sourcesList->addItem("dimmer0");
@@ -35,27 +38,34 @@ FRDMControlView::FRDMControlView(QWidget *parent) :
 
     connect(ui->sourcesList, SIGNAL(currentTextChanged(const QString &)), SLOT(onRessourceListChanged(const QString &)));
     connect(ui->setPointSpinBox, SIGNAL(valueChanged(double)), SLOT(onSetPointValueChanged(double)));
+
+
+
+    connect(ui->setPointSlider, SIGNAL(sliderReleased()), SLOT(onSetPointSliderLevelReleased()));
+    connect(ui->setPointSpinBox, SIGNAL(valueChanged(int)),ui->setPointSlider, SLOT(setValue(int)));
+    connect(ui->setPointSlider, SIGNAL(valueChanged(int)),ui->setPointSpinBox, SLOT(setValue(int)));
+
+
+
+}
+
+void FRDMControlView::onSetPointSliderLevelReleased() {
+    //ui->setPointSpinBox
+    onSetPointValueChanged(ui->setPointSpinBox->value());
 }
 
 
 void FRDMControlView::onSetPointValueChanged(double newValue) {
-
     if (ui->sourcesList->currentText().toLatin1() == "temperature") {
         temperature.value = newValue;
-
         serialConfigurationView->performRequest(QString("set temperature %1").arg(QString::number(newValue)));
-
     } else if (ui->sourcesList->currentText().toLatin1() == "dimmer0") {
         dimmer0.value = newValue;
-
         serialConfigurationView->performRequest(QString("set dimmer0 %1").arg(QString::number(newValue)));
-
     } else if (ui->sourcesList->currentText().toLatin1() == "pressure") {
         pressure.value =  newValue;
-
         serialConfigurationView->performRequest(QString("set pressure %1").arg(QString::number(newValue)));
     }
-
 }
 
 void FRDMControlView::setSerialConfigurationView(SerialConfigurationView *newSCV) {
@@ -67,7 +77,6 @@ void FRDMControlView::onRessourceListChanged(const QString &ressourceName) {
     if (ui->sourcesList->currentText().toLatin1() == "temperature") {
         serialConfigurationView->performRequest(QString("get temperature"));
         //ui->setPointSpinBox->setValue(temperature.value);
-
 
     } else if (ui->sourcesList->currentText().toLatin1() == "dimmer0") {
         serialConfigurationView->performRequest(QString("get dimmer0"));
@@ -89,7 +98,6 @@ void FRDMControlView::setTemperature(float nT) {
 float FRDMControlView::getTemperature() {
     return temperature.value;
 }
-
 void FRDMControlView::setDimmer0(float nD0) {
     dimmer0.value = nD0;
     if (ui->sourcesList->currentText().toLatin1() == "dimmer0") {
@@ -99,7 +107,6 @@ void FRDMControlView::setDimmer0(float nD0) {
 float FRDMControlView::getDimmer0() {
     return dimmer0.value;
 }
-
 void FRDMControlView::setPressure(float nP) {
     pressure.value = nP;
     if (ui->sourcesList->currentText().toLatin1() == "pressure") {
@@ -109,7 +116,6 @@ void FRDMControlView::setPressure(float nP) {
 float FRDMControlView::getPressure() {
     return pressure.value;
 }
-
 
 FRDMControlView::~FRDMControlView()
 {

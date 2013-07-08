@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "frdmjsonparser.h"
-
 #include "MessageWindow.h"
 
 
@@ -17,15 +15,9 @@ int main(int argc, char *argv[])
 #endif
     //! [0]
 
+    MainWindow w;
+    w.show();
 
-        MainWindow w;
-        w.show();
-
-/*
-    CustomPlotDialog d;
-    d.show();
-
-    */
     return a.exec();
 }
 

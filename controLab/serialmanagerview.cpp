@@ -139,11 +139,8 @@ void SerialManagerView::transmitMsg()
 {
     int i = port->write(message->text().toLatin1());
     qDebug("trasmitted : %d", i);
-
     qDebug() << "message : " << message->text().toLatin1();
-
     //receiveMsg();
-
     message->clear();
 }
 

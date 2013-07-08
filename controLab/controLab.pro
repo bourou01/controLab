@@ -39,8 +39,6 @@ HEADERS  += mainwindow.h \
     frdmcontrolview.h
 
 FORMS    += mainwindow.ui \
-    serialcomdialog.ui \
-    customplotdialog.ui \
     customplotview.ui \
     serialconfigurationview.ui \
     frdmcontrolview.ui

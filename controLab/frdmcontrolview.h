@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+#include <QSpinBox>
+#include <QSlider>
+
 
 #include "serialconfigurationview.h"
 
@@ -31,14 +34,11 @@ public:
     
 
 private slots:
-
-
     void onRessourceListChanged(const QString &);
     void onSetPointValueChanged(double);
+    void onSetPointSliderLevelReleased();
 
 Q_SIGNALS:
-
-
 
 public:
 
