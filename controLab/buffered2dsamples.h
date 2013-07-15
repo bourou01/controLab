@@ -15,7 +15,7 @@ public:
     ~Buffered2DSamples();
 
     bool insert2DSample(double x, double y);
-
+    void reset();
 /// getters
 
     QVector <double> * getXVector();

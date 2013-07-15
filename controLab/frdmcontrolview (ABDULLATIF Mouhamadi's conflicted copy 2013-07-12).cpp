@@ -34,14 +34,14 @@ FRDMControlView::FRDMControlView(QWidget *parent) :
 
     /// virtuals
     virtualSP.name = QString("virtualSP");
-    virtualSP.value = 111;
-    virtualSP.min = -1000;
-    virtualSP.max = 1000;
+    virtualSP.value = 0;
+    virtualSP.min = -1000000000;
+    virtualSP.max = 1000000000;
 
     virtualSensor.name = QString("virtualSensor");
-    virtualSensor.value = 1.0;
-    virtualSensor.min = -1000;
-    virtualSensor.max = 1000;
+    virtualSensor.value = 0;
+    virtualSensor.min = -1000000000;
+    virtualSensor.max = 1000000000;
 
 
 
@@ -59,12 +59,14 @@ FRDMControlView::FRDMControlView(QWidget *parent) :
     //connect(ui->setPointSpinBox, SIGNAL(valueChanged(double)), SLOT(onSetPointValueChanged(double)));
 
 
-
+/*
     connect(ui->setPointSlider, SIGNAL(sliderReleased()), SLOT(onSetPointSliderLevelReleased()));
     connect(ui->setPointSpinBox, SIGNAL(valueChanged(int)),ui->setPointSlider, SLOT(setValue(int)));
     connect(ui->setPointSlider, SIGNAL(valueChanged(int)),ui->setPointSpinBox, SLOT(setValue(int)));
+*/
 
-    connect(ui->setPointSpinBox, SIGNAL(valueChanged(int)), SLOT(onSetPointValueChanged(int)));
+
+    connect(ui->setPointSpinBox, SIGNAL(valueChanged(double)), SLOT(onSetPointValueChanged(double)));
 
 }
 
@@ -74,7 +76,7 @@ void FRDMControlView::onSetPointSliderLevelReleased() {
 }
 
 
-void FRDMControlView::onSetPointValueChanged(int newValue) {
+void FRDMControlView::onSetPointValueChanged(double newValue) {
     if (ui->sourcesList->currentText().toLatin1() == "temperature") {
         temperature.value = newValue;
         serialConfigurationView->performRequest(QString("set temperature %1").arg(QString::number(newValue)));

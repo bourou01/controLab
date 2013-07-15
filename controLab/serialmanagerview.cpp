@@ -22,7 +22,7 @@ SerialManagerView::SerialManagerView(QWidget *parent)
 
     /// Timer for Polling
     timer = new QTimer(this);
-    timer->setInterval(40);
+    timer->setInterval(1000);
 
 
     PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};

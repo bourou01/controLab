@@ -14,9 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QCustomPlot" name="customPlot" native="true"/>
-   </item>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
@@ -34,6 +31,13 @@
           <widget class="QToolButton" name="deletePlotButton">
            <property name="text">
             <string>Remove Plot</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="resetPlotButton">
+           <property name="text">
+            <string>Reset Plots</string>
            </property>
           </widget>
          </item>
@@ -156,6 +160,9 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QCustomPlot" name="customPlot" native="true"/>
    </item>
   </layout>
  </widget>

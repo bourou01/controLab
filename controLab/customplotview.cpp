@@ -23,6 +23,7 @@ CustomPlotView::CustomPlotView(QWidget *parent) :
         ui->lineStyleComboBox->addItem("Impulse", QCPGraph::lsImpulse);
 
     ///// Configure colorComboBox
+    /*
         myColors.push_back(QColor(Qt::black));
         myColors.push_back(QColor(Qt::darkGray));
         myColors.push_back(QColor(Qt::gray));
@@ -33,13 +34,18 @@ CustomPlotView::CustomPlotView(QWidget *parent) :
         myColors.push_back(QColor(Qt::cyan));
         myColors.push_back(QColor(Qt::magenta));
         myColors.push_back(QColor(Qt::yellow));
+        */
+        myColors.push_back(QColor(Qt::black));
+        myColors.push_back(QColor(Qt::red));
+        myColors.push_back(QColor(Qt::blue));
+
         myColors.push_back(QColor(Qt::darkRed));
         myColors.push_back(QColor(Qt::darkGreen));
         myColors.push_back(QColor(Qt::darkBlue));
         myColors.push_back(QColor(Qt::darkCyan));
         myColors.push_back(QColor(Qt::darkMagenta));
         myColors.push_back(QColor(Qt::darkYellow));
-
+/*
         ui->colorComboBox->addItem("black", "");
         ui->colorComboBox->addItem("darkGray", "");
         ui->colorComboBox->addItem("gray", "");
@@ -50,6 +56,11 @@ CustomPlotView::CustomPlotView(QWidget *parent) :
         ui->colorComboBox->addItem("cyan", "");
         ui->colorComboBox->addItem("magenta", "");
         ui->colorComboBox->addItem("yellow", "");
+        */
+        ui->colorComboBox->addItem("black", "");
+        ui->colorComboBox->addItem("red", "");
+        ui->colorComboBox->addItem("blue", "");
+
         ui->colorComboBox->addItem("darkRed", "");
         ui->colorComboBox->addItem("darkGreen", "");
         ui->colorComboBox->addItem("darkBlue", "");
@@ -84,6 +95,7 @@ CustomPlotView::CustomPlotView(QWidget *parent) :
     ///// bouton
         connect(ui->addPlotButton, SIGNAL(clicked()), this, SLOT(onAddPlotButtonClicked()));
         connect(ui->deletePlotButton, SIGNAL(clicked()), this, SLOT(onDeletePlotButtonClicked()));
+        connect(ui->resetPlotButton, SIGNAL(clicked()), this, SLOT(onResetPlotButtonClicked()));
 
     ///// comboBoxes
         connect(ui->canalsListComboBox, SIGNAL(currentIndexChanged(int)), SLOT(onCanalsListChanged(int)));
@@ -179,6 +191,7 @@ void CustomPlotView::updatePlotsFromNotification(QString toParse) {
 
         double frdmX = FRDMJSONParser::getInstance()->xAtPort(customGraph->getCurrentCanal());
         double frdmY = FRDMJSONParser::getInstance()->yAtPort(customGraph->getCurrentCanal());
+
         QString legend = FRDMJSONParser::getInstance()->nameAtPort(customGraph->getCurrentCanal());
 
         customGraph->updateWith(frdmX, frdmY);
@@ -237,6 +250,8 @@ void CustomPlotView::onGraphIdChanged(int index) {
 }
 
 void CustomPlotView::onAddPlotButtonClicked() {
+    if ( !(canals.count() > customGraphs.count()) )
+        return;
     CustomPlotView::insertNewGraph();
     CustomPlotView::updateGraphsIds();
 }
@@ -250,19 +265,38 @@ void CustomPlotView::onDeletePlotButtonClicked() {
         ui->graphIdComboBox->removeItem(index);
     }
 }
+void CustomPlotView::onResetPlotButtonClicked() {
+    TIME_SYNCHRONISATION = 0;
+    for (int i=0; i<ui->customPlot->graphCount(); i++) {
+        CustomGraph *customGraph = this->customGraphs.at(i);
+        customGraph->resetBuffer();
+    }
 
+}
 
 int CustomPlotView::insertNewGraph() {
 
     CustomGraph *customGraph = new CustomGraph();
 
-    customGraph->setCurrentCanal("1");
+    QString currentCanal = QString("%1").arg(QString::number(customGraphs.count() + 1));
+    customGraph->setCurrentCanal(currentCanal);
 
     customGraph->setIndex(ui->customPlot->graphCount());
     customGraphs.push_back(customGraph);
 
     ui->customPlot->addGraph();
-    ui->customPlot->graph()->setScatterStyle(QCPScatterStyle::ssDisc);
+    ui->customPlot->graph()->setScatterStyle(QCPScatterStyle::ssCircle);
+    ui->customPlot->graph()->setLineStyle(QCPGraph::lsStepCenter);
+    /// color
+    QPen graphPen;
+    graphPen.setColor(myColors.at(customGraphs.count()));
+    //qDebug() << (QColor)ui->colorComboBox->itemData(index).Color;
+    //graphPen.setWidthF(2.0);
+    ui->customPlot->graph()->setPen(graphPen);
+
+    /// end color
+
+
     ui->customPlot->graph()->setName(QString("New graph %1").arg(ui->customPlot->graphCount()-1));
 
     return 0;

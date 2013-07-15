@@ -31,8 +31,10 @@ SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
     ui->baudRateBox->addItem("4800", BAUD4800);
     ui->baudRateBox->addItem("9600", BAUD9600);
     ui->baudRateBox->addItem("19200", BAUD19200);
+    ui->baudRateBox->addItem("38400", BAUD38400);
+    ui->baudRateBox->addItem("57600", BAUD57600);
     ui->baudRateBox->addItem("115200", BAUD115200);
-    ui->baudRateBox->setCurrentIndex(5);
+    ui->baudRateBox->setCurrentIndex(7);
 
     ui->parityBox->addItem("NONE", PAR_NONE);
     ui->parityBox->addItem("ODD", PAR_ODD);
@@ -54,12 +56,11 @@ SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
     ui->led->turnOff();
 
     timer = new QTimer(this);
-    //timer->setInterval(40);
-    timer->setInterval(250);
+    timer->setInterval(40);
     //! [1]
-   //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   //PortSettings settings = {BAUD57600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
-    PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+   PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
      port = new QextSerialPort(ui->portBox->currentText(), settings, QextSerialPort::Polling);
 
@@ -279,6 +280,8 @@ void SerialConfigurationView::onOpenCloseButtonClicked()
         port->open(QIODevice::ReadWrite);
     }
     else {
+        timer->stop();
+
         port->close();
     }
 

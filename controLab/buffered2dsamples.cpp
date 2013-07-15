@@ -47,6 +47,13 @@ bool Buffered2DSamples::insert2DSample(double x, double y) {
     return true;
 }
 
+void Buffered2DSamples::reset() {
+    this->xVector->clear();
+    this->yVector->clear();
+    this->xVector->resize(0);
+    this->yVector->resize(0);
+}
+
 /// setteurs
 void Buffered2DSamples::setBufferSize(int bufferSize) {
     this->bufferSize = bufferSize;

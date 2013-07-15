@@ -54,3 +54,7 @@ void CustomGraph::setComboSelected(int combo) {
 void CustomGraph::setBufferSize(int buffer) {
     buffered2DSamples->setBufferSize(buffer);
 }
+
+void CustomGraph::resetBuffer() {
+    buffered2DSamples->reset();
+}

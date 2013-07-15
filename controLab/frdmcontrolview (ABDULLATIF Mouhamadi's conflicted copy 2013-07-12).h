@@ -35,7 +35,7 @@ public:
 
 private slots:
     void onRessourceListChanged(const QString &);
-    void onSetPointValueChanged(int);
+    void onSetPointValueChanged(double);
     void onSetPointSliderLevelReleased();
 
 Q_SIGNALS:

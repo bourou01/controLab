@@ -33,6 +33,8 @@ private slots:
     void onCanalsListChanged(int selected);
     void onAddPlotButtonClicked();
     void onDeletePlotButtonClicked();
+    void onResetPlotButtonClicked();
+
     void onGraphIdChanged(int index);
 
     void onScatterStyleComboBoxChanged(int index);

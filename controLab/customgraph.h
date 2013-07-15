@@ -30,6 +30,8 @@ public:
 
     void setBufferSize(int buffer);
 
+    void resetBuffer();
+
 private:
     int graphIndex;
     Buffered2DSamples *buffered2DSamples;
