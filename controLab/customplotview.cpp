@@ -6,8 +6,6 @@
 
 #include "frdmjsonparser.h"
 
-
-
 CustomPlotView::CustomPlotView(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CustomPlotView)
@@ -133,10 +131,6 @@ CustomPlotView::CustomPlotView(QWidget *parent) :
 
 }
 
-
-
-
-
 void CustomPlotView::configureCustomPlot() {
     /*
     ui->customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
@@ -165,23 +159,20 @@ void CustomPlotView::configureCustomPlot() {
 void CustomPlotView::updatePlotsFromNotification(QString toParse) {
 
 
+    toParseStr = QString(toParse);
+
     FRDMJSONParser::getInstance()->setJson(&toParse);
-
-
-    double last_time = FRDMJSONParser::getInstance()->xAtPort("1");
+    double last_time = FRDMJSONParser::getInstance()->getValueForKey("t");
 
     /// to not getting the same time synchronisation
-
-    if (!(last_time >CustomPlotView::TIME_SYNCHRONISATION))
-        return;
-
-    //qDebug() << (last_time >CustomPlotView::TIME_SYNCHRONISATION);
+    //if (!(last_time >CustomPlotView::TIME_SYNCHRONISATION))
+        //return;
 
     if (last_time > TIME_SYNCHRONISATION)
         TIME_SYNCHRONISATION = last_time;
 
-
     QList<QString> listen =  FRDMJSONParser::getInstance()->ports();
+
     CustomPlotView::updateCanalsListWith(listen);
     for (int i=0; i<ui->customPlot->graphCount(); i++) {
         CustomGraph *customGraph = this->customGraphs.at(i);
@@ -189,15 +180,16 @@ void CustomPlotView::updatePlotsFromNotification(QString toParse) {
         //// update the bufferSize
         customGraph->setBufferSize(ui->bufferSizeSpinBox->value());
 
-        double frdmX = FRDMJSONParser::getInstance()->xAtPort(customGraph->getCurrentCanal());
-        double frdmY = FRDMJSONParser::getInstance()->yAtPort(customGraph->getCurrentCanal());
+        double frdmX = FRDMJSONParser::getInstance()->getValueForKey("t");
+        double frdmY = FRDMJSONParser::getInstance()->getValueForKey(customGraph->getCurrentCanal());
 
-        QString legend = FRDMJSONParser::getInstance()->nameAtPort(customGraph->getCurrentCanal());
+        //QString legend = FRDMJSONParser::getInstance()->nameAtPort(customGraph->getCurrentCanal());
 
         customGraph->updateWith(frdmX, frdmY);
         QCPGraph * currentGraph = ui->customPlot->graph(i);
         currentGraph->setData(*customGraph->getXVector(), *customGraph->getYVector());
-        currentGraph->setName(legend);
+        currentGraph->setName(customGraph->getCurrentCanal());
+
     }
     if (ui->autoscaleCheckBox->checkState() == Qt::Checked) {
         ui->customPlot->rescaleAxes();
@@ -250,7 +242,7 @@ void CustomPlotView::onGraphIdChanged(int index) {
 }
 
 void CustomPlotView::onAddPlotButtonClicked() {
-    if ( !(canals.count() > customGraphs.count()) )
+    if ( !(canals.count() > customGraphs.count() + 1) )
         return;
     CustomPlotView::insertNewGraph();
     CustomPlotView::updateGraphsIds();
@@ -276,9 +268,16 @@ void CustomPlotView::onResetPlotButtonClicked() {
 
 int CustomPlotView::insertNewGraph() {
 
+    FRDMJSONParser::getInstance()->setJson(&toParseStr);
+
+    QString key = FRDMJSONParser::getInstance()->getKeyAt(customGraphs.count() + 1);
+
     CustomGraph *customGraph = new CustomGraph();
 
-    QString currentCanal = QString("%1").arg(QString::number(customGraphs.count() + 1));
+   //QString currentCanal = QString("%1").arg(QString::number(customGraphs.count() + 1));
+    QString currentCanal = QString(key);
+
+
     customGraph->setCurrentCanal(currentCanal);
 
     customGraph->setIndex(ui->customPlot->graphCount());

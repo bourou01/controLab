@@ -17,6 +17,8 @@
 #include "serialconfigurationview.h"
 
 
+#include "managedobjectstore.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -39,9 +41,10 @@ MainWindow::MainWindow(QWidget *parent) :
 ///
 ///
 
-    //QTimer *timer = new QTimer (this);
-    //connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
-    //timer->start(500);
+    QTimer *timer = new QTimer (this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
+    timer->start(500);
+
 
 
 /////// Attache le bouton 'GO' a l'action ouvrir la fenetre de la communication serie
@@ -62,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
 /*
     QTimer *timer = new QTimer (this);
     connect(timer, SIGNAL(timeout()), this, SLOT(onSerialNotificationPushed()));
-    timer->start(1500);
+    timer->start(500);
 */
 
     plots = new QVector<CustomPlotView *>();
@@ -115,7 +118,11 @@ void MainWindow::onGoButtonClicked() {
 ///
 void MainWindow::onDatasReadyToBeRed(QString toParse) {
 
-    FRDMJSONParser::getInstance()->setJson(&toParse);
+    bool ok = FRDMJSONParser::getInstance()->setJson(&toParse);
+
+    if (!ok)
+        return;
+
     QString key = FRDMJSONParser::getInstance()->getKeyAt(0);
     double value = FRDMJSONParser::getInstance()->getValueForKey(key);
 
@@ -126,13 +133,18 @@ void MainWindow::onDatasReadyToBeRed(QString toParse) {
     } else if (key.toLatin1() == "pressure") {
         frdmControlView->setPressure(value);
     } else {
+
+
+        ManagedObjectStore::getInstance()->insertRow(toParse);
+
         for (int i=0; i<plots->size(); i++) {
                plots->at(i)->updatePlotsFromNotification(toParse);
         }
+
+
+
+
     }
-
-
-
 
 }
 
@@ -168,17 +180,18 @@ void MainWindow::canalsListComboBoxChanged(CustomPlotView *sender) { /// depreca
 ///
 ///
 void MainWindow::onSerialNotificationPushed() {
-/*
+
+    static int dummy = 0;
+    dummy++;
+
     double y = (rand()/(double)RAND_MAX + 0.5)*2;
-    QString *toParse = new QString(QString("{\"1\":{\"name\": \"pression\",\"x\": \"%1\",\"y\": \"%2\"}, \"2\":{\"name\": \"temperature\",\"x\": \"%3\",\"y\": \"%4\"}}").arg(QString::number(dummy), QString::number(sin(dummy)), QString::number(dummy), QString::number(y)));
+    QString *toParse = new QString(QString("{\"t\":\"%1\", \"T\":\"%2\", \"P\":\"%3\"}").arg(QString::number(dummy), QString::number(sin(dummy)), QString::number(y)));
 
-    for (int i=0; i<plots->size(); i++) {
-           plots->at(i)->updatePlotsFromNotification(*toParse);
-    }
-    */
+    //qDebug() << *toParse;
 
+    onDatasReadyToBeRed(*toParse);
 
-    serialConfigurationView->performRequest(QString("exec sensors"));
+    ManagedObjectStore::getInstance()->insertRow(*toParse);
 }
 
 
@@ -223,7 +236,6 @@ void MainWindow::createMenus()
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAct);
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 ///

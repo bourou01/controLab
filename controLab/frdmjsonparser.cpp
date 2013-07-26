@@ -18,8 +18,12 @@ FRDMJSONParser* FRDMJSONParser::getInstance() {
 
     return _instance;
 }
-void FRDMJSONParser::setJson(QString *newJson) {
+bool FRDMJSONParser::setJson(QString *newJson) {
     this->json = newJson;
+
+    QJsonDocument doc = QJsonDocument::fromJson(this->json->toUtf8());
+    return !doc.isEmpty();
+
 }
 QMap<QString, QVariant> FRDMJSONParser::getMappedJson(void) {
     if (this->json == 0)
@@ -49,8 +53,18 @@ QString FRDMJSONParser::getKeyAt(int position) {
     if (keys.length()>position)
         return keys.at(position);
     else
-        return QString("");
+        return QString("nd");
 }
 double FRDMJSONParser::getValueForKey(QString key) {
     return getMappedJson().value(key).toDouble();
 }
+
+/// key-value-coding
+int FRDMJSONParser::count() {
+    return this->ports().count();
+}
+double FRDMJSONParser::valueAtIndex(int index) {
+    return this->getValueForKey(this->getKeyAt(index));
+}
+
+

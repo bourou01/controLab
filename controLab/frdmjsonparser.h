@@ -18,17 +18,23 @@ public:
     static FRDMJSONParser *getInstance();
 
     /// configuration
-    void setJson(QString *newJson);
+    bool setJson(QString *newJson);
 
     /// provider - for 'exec sensors'
     QList<QString> ports(void);
-    QString nameAtPort(QString port);
-    double xAtPort(QString port);
-    double yAtPort(QString port);
+
+    QString nameAtPort(QString port);   /// deprecated
+    double xAtPort(QString port);   /// deprecated
+    double yAtPort(QString port);   /// deprecated
 
     /// provider - for 'get ressource'
     QString getKeyAt(int position);
     double getValueForKey(QString key);
+
+    /// key-value-coding
+    int count();
+    double valueAtIndex(int index);
+
 
 private:
     QMap<QString, QVariant> getMappedJson(void);

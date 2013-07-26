@@ -61,7 +61,7 @@ private:
 
 
 
-
+    QString toParseStr;
     
 private:
     Ui::CustomPlotView *ui;

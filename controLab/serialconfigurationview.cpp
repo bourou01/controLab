@@ -88,7 +88,6 @@ SerialConfigurationView::SerialConfigurationView(QWidget *parent) :
     //port->setTimeout(15);
 
     //ui->timeOutSpinBox->setValue(15);
-
     /// configure textEdit
     ui->message->installEventFilter(this);
 
@@ -177,6 +176,8 @@ void SerialConfigurationView::onReadyRead()
     char buff[1024];
     int numBytes;
     numBytes = port->bytesAvailable();
+
+
     if (numBytes) {
         if(numBytes > 1024)
             numBytes = 1024;
@@ -195,6 +196,7 @@ void SerialConfigurationView::onReadyRead()
         qDebug("bytes available: %d", numBytes);
         qDebug("received: %d", i);
     }
+
 
 
     //receiveMsg();

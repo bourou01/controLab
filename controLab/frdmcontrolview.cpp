@@ -181,9 +181,6 @@ float FRDMControlView::getVirtualSensor() {
     return virtualSensor.value;
 }
 
-
-
-
 FRDMControlView::~FRDMControlView()
 {
     delete ui;

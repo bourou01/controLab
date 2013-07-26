@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     serialmanagerview.cpp \
     customplotview.cpp \
     serialconfigurationview.cpp \
-    frdmcontrolview.cpp
+    frdmcontrolview.cpp \
+    managedobjectstore.cpp
 
 HEADERS  += mainwindow.h \
     hled.h \
@@ -36,7 +37,8 @@ HEADERS  += mainwindow.h \
     serialmanagerview.h \
     customplotview.h \
     serialconfigurationview.h \
-    frdmcontrolview.h
+    frdmcontrolview.h \
+    managedobjectstore.h
 
 FORMS    += mainwindow.ui \
     customplotview.ui \
